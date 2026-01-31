@@ -101,6 +101,34 @@ Se implementaron y evaluaron cuatro métodos de aprendizaje no supervisado de re
 #### PCA
 
 #### Isomap
+ISOMAP es un algoritmo eficaz para descubrir estructuras no lineales en conjuntos de datos de alta dimensionalidad, ya que busca preservar las distancias geodésicas entre los puntos, es decir, las distancias a lo largo de la variedad subyacente. Este método extiende el Análisis de Componentes Principales (PCA) a contextos no lineales mediante la construcción de un grafo de vecinos y el cálculo de las distancias más cortas entre ellos. No obstante, ISOMAP presenta ciertas limitaciones, como su sensibilidad a la elección del número de vecinos y a la presencia de ruido, lo que puede provocar distorsiones en la estimación de las distancias y afectar a la calidad de la proyección final.
+
+El número de vecinos está representado por el número k. En este caso, se escogió el valor de k=10 ya que nos permitía visualizar mejor graficamente las relaciones locales entre las diferentes clases. 
+```{r}
+set.seed(123)
+X <- as.matrix(df_scaled[, -1])
+y   <- df_filter$class
+
+isomap.df <- data.frame(
+  Dim1  = isomap.results$dim2[, 1],
+  Dim2  = isomap.results$dim2[, 2],
+  class = y
+)
+```
+Para graficar, se utilizó el siguiente código:
+```{r}
+ggplot(isomap.df, aes(Dim1, Dim2, color = class)) +
+  geom_point(size = 2.5, alpha = 0.85) +
+  labs(
+    title = "Isomap (k = 10)",
+    x = "Dimensión 1",
+    y = "Dimensión 2",
+    color = "Clase"
+  ) +
+  theme_classic() +
+  theme(plot.title = element_text(hjust = 0.5))
+```
+La proyección bidimensional obtenida mediante Isomap (k = 10) muestra una separación clara entre la mayoría de las clases analizadas. La clase AGH aparece claramente aislada del resto, mientras que CFB forma un clúster amplio y bien definido. Por el contrario, las clases CGC y HPB presentan cierta proximidad y solapamiento, lo que sugiere similitudes en sus patrones de expresión génica. En conjunto, Isomap captura de forma eficaz la estructura no lineal de los datos, proporcionando una representación más informativa que métodos lineales como PCA.
 
 #### Locally linear embedding (LLE)
 
